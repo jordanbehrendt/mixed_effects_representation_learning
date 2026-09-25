@@ -159,8 +159,3 @@ variance components, where applicable) to
 `pipeline.merl.tensorboard: true` (as set in the provided configs),
 TensorBoard logs are additionally written for the MERL alternating
 optimization procedure.
-
-## Citation
-
-If you use this code, please cite the paper (see the ICLR 2027 submission
-for full details).
