@@ -1,0 +1,92 @@
+model:
+  ml:
+    framework: torch
+    name: biosignal_transformer
+
+    extra_transformer_features:
+      - x4
+      - x5
+      - x6
+      - xc1
+      - xc2
+
+    one_hot_encoding: false
+    one_hot_encoding_features:
+      - z
+
+    params:
+      epochs: 500
+      batch_size: 20
+      patience: 10
+      device: cuda:0
+
+      # Use signal branch
+      use_signal_branch: true
+
+      # Input
+      input_dim: 5
+      extra_dim: 5
+
+      # Transformer
+      d_model: 128
+      n_heads: 4
+      num_layers: 2
+      dim_feedforward: 256
+
+      # Modality-specific CNN
+      conv_channels: 32
+      conv_kernel_size: 9
+
+      # Downsampling
+      downsample_factor: 2
+
+      # Pooling
+      pooling: cls
+
+      # Regularization
+      dropout: 0.1
+      activation: gelu
+
+      # Optimizer
+      optimizer:
+        name: adamw
+        lr: 0.0003
+        weight_decay: 0.0001
+
+      loss: mse
+
+  lmm:
+    fixed_formula: "residual ~ 1"
+    group_var: "z"
+    random_formula: "1 + x4 + x5 + x6"
+    # random effects covariance:
+    # "full" -> estimate covariance between intercept and slope
+    # "diagonal" -> assume covariance = 0
+    random_effects_covariance: "diagonal"
+    # residual covariance:
+    # "independence", "ar1", "cs"
+    residual_covariance: "independence"
+    time_var: "t"
+    estimation_method: "REML"
+    r_script: scripts/linear_mixed_model.R
+
+output:
+  save: false
+
+pipeline:
+  type: merl
+
+  merl:
+    n_iter: 10
+    early_stopping: true
+    tol: 1e-4
+    loss: rmse
+
+    use_ml: true
+    use_lmm: false
+
+    ml_init_mode: "reinit" # "reinit" for training from scratch, "finetune" for using previous model
+
+    tensorboard: true
+    log_dir: ""
+    description: ""

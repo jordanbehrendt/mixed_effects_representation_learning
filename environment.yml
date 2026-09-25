@@ -1,0 +1,19 @@
+name: merl_env
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - pytorch
+  - torchaudio
+  - pytorch-cuda=12.1
+  - torchvision
+  - statsmodels
+  - pandas
+  - scipy
+  - scikit-learn
+  - matplotlib
+  - numpy
+  - ipykernel
+  - setuptools
+  - wheel
+  - pip
